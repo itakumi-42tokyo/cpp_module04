@@ -8,10 +8,13 @@
 int main() {
   // test1 can you override?
   std::cout << "--- Test1 ---" << std::endl;
-  Cat tama;
-  Dog poti;
-  tama.makeSound();
-  poti.makeSound();
+  Animal* broo = new Cat;
+  Animal* siss = new Dog;
+  broo->makeSound();
+  siss->makeSound();
+
+  delete broo;
+  delete siss;
 
   // test2
   std::cout << "--- Test2 ---" << std::endl;

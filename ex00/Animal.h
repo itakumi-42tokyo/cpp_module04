@@ -8,8 +8,8 @@ class Animal {
   explicit Animal();
   Animal(const Animal& animal);
   Animal& operator=(const Animal& animal);
-  ~Animal();
-  virtual void makeSound();
+  virtual ~Animal();
+  virtual void makeSound() const;
 
  protected:
   std::string type_;
