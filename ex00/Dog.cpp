@@ -14,7 +14,7 @@ Dog& Dog::operator=(const Dog& c) {
   return *this;
 }
 
-Dog::~Dog() { std::cout << "Dog: destructor called." << std::endl; }
+Dog::~Dog() { std::cout << " Dog: destructor called." << std::endl; }
 
 void Dog::makeSound() const { std::cout << "Waon! Waon!" << std::endl; }
 
