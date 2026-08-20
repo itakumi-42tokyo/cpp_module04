@@ -3,13 +3,18 @@
 #include <iostream>
 
 MateriaSource::MateriaSource() : IMateriaSource(), materias_count_(0U) {
+  for (int i = 0; i < materias_num_; i++) {
+    sample_materias_[i] = NULL;
+  }
   // std::cout << "MateriaSource: default constructor called." << std::endl;
 }
 
 MateriaSource::MateriaSource(const MateriaSource& other)
     : IMateriaSource(), materias_count_(other.materias_count_) {
-  for (int i = 0; i < materias_count_; i++) {
-    sample_materias_[i] = other.sample_materias_[i]->clone();
+  for (int i = 0; i < materias_num_; i++) {
+    sample_materias_[i] = other.sample_materias_[i] == NULL
+                              ? NULL
+                              : other.sample_materias_[i]->clone();
   }
   // std::cout << "MateriaSource: copy constructor called." << std::endl;
 }
@@ -19,12 +24,14 @@ MateriaSource& MateriaSource::operator=(const MateriaSource& other) {
   if (this == &other) {
     return *this;
   }
-  for (int i = 0; i < materias_count_; i++) {
+  for (int i = 0; i < materias_num_; i++) {
     delete sample_materias_[i];
   }
   materias_count_ = other.materias_count_;
-  for (int i = 0; i < materias_count_; i++) {
-    sample_materias_[i] = other.sample_materias_[i]->clone();
+  for (int i = 0; i < materias_num_; i++) {
+    sample_materias_[i] = other.sample_materias_[i] == NULL
+                              ? NULL
+                              : other.sample_materias_[i]->clone();
   }
   return *this;
 }

@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <iostream>
 
 #include "AMateria.h"
 #include "Character.h"
@@ -8,7 +9,9 @@
 #include "Ice.h"
 #include "MateriaSource.h"
 
-int main() {
+namespace {
+void runSubjectTest() {
+  std::cout << "------- Subject Test Case -----------" << std::endl;
   IMateriaSource* src = new MateriaSource();
   src->learnMateria(new Ice());
   src->learnMateria(new Cure());
@@ -25,5 +28,15 @@ int main() {
   delete bob;
   delete me;
   delete src;
+
+  std::cout << "----------------------------" << std::endl;
+}
+
+void runMyTest() {}
+}  // namespace
+
+int main() {
+  runSubjectTest();
+  runMyTest();
   return EXIT_SUCCESS;
 }

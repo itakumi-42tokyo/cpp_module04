@@ -6,7 +6,7 @@
 
 Character::Character(const std::string& name)
     : ICharacter(), name_(name), slot_count_(0) {
-  for (unsigned int i = 0; i < slot_num_; i++) {
+  for (int i = 0; i < slot_num_; i++) {
     slot_[i] = NULL;
   }
   // std::cout << "Character: default constructor called." << std::endl;
@@ -14,7 +14,7 @@ Character::Character(const std::string& name)
 
 Character::Character(const Character& other)
     : ICharacter(), name_(other.name_), slot_count_(other.slot_count_) {
-  for (unsigned int i = 0; i < slot_num_; i++) {
+  for (int i = 0; i < slot_num_; i++) {
     slot_[i] = (other.slot_[i] == NULL) ? NULL : other.slot_[i]->clone();
   }
   // std::cout << "Character: copy constructor called." << std::endl;
