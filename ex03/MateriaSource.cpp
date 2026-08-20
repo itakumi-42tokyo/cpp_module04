@@ -26,6 +26,7 @@ MateriaSource& MateriaSource::operator=(const MateriaSource& other) {
   }
   for (int i = 0; i < materias_num_; i++) {
     delete sample_materias_[i];
+    sample_materias_[i] = NULL;
   }
   materias_count_ = other.materias_count_;
   for (int i = 0; i < materias_num_; i++) {
