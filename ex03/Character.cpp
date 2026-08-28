@@ -47,8 +47,13 @@ void Character::equip(AMateria* a_materia) {
   if (slot_count_ >= slot_num_ || a_materia == NULL) {
     return;
   }
-  slot_[slot_count_] = a_materia;
-  slot_count_++;
+  for (int i = 0; i < slot_num_; i++) {
+    if (slot_[i] == NULL) {
+      slot_[i] = a_materia;
+      slot_count_++;
+      return;
+    }
+  }
 }
 
 // NOTE
