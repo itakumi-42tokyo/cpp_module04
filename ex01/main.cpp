@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cstdlib>
 #include <iostream>
 
@@ -6,42 +7,135 @@
 #include "Cat.h"
 #include "Dog.h"
 
-int main() {
-  std::cout << "--- Sample Test ---" << std::endl;
+namespace {
+
+void runSubjectTest() {
+  std::cout << "------- Subject Test Case -----------" << std::endl;
   const Animal* j = new Dog();
   const Animal* i = new Cat();
-  delete j;
+
+  delete j;  // should not create a leak
   delete i;
+  std::cout << "----------------------------" << std::endl;
+}
 
-  std::cout << "--- Test1 ---" << std::endl;
-  Cat tama0;
-  Cat tama1(tama0);
-  Cat tama2 = tama0;
-  tama2 = tama2;
-  tama0.makeSound();
-  tama1.makeSound();
-  tama2.makeSound();
-  Dog poti0;
-  Dog poti1(poti0);
-  Dog poti2 = poti0;
-  poti2 = poti2;
-  poti0.makeSound();
-  poti1.makeSound();
-  poti2.makeSound();
+// getType() must reflect the concrete subclass through a base Animal*.
+void testGetTypeThroughBasePointer() {
+  const Animal* dog = new Dog();
+  const Animal* cat = new Cat();
 
-  std::cout << "--- Test2 ---" << std::endl;
+  assert(dog->getType() == "Dog");
+  assert(cat->getType() == "Cat");
+
+  delete dog;
+  delete cat;
+
+  std::cout << "OK: getType through Animal*" << std::endl;
+}
+
+// The copy constructor must deep-copy the Brain: the copy must keep working
+// (and must be independently destructible) after the original is gone.
+void testCopyConstructorDeepCopiesBrain() {
+  Dog original;
+  Dog copy(original);
+  assert(copy.getType() == "Dog");
+  copy.makeSound();
+
+  Cat cat_original;
+  Cat cat_copy = cat_original;  // copy-initialization -> copy constructor
+  assert(cat_copy.getType() == "Cat");
+  cat_copy.makeSound();
+
+  std::cout << "OK: Dog/Cat copy constructor deep-copies Brain" << std::endl;
+}
+
+// Regression test: operator= must allocate its own Brain rather than
+// aliasing the source's pointer. Before the fix, `b = a` made a and b share
+// one Brain*, and destroying both double-freed it (crash under
+// AddressSanitizer). Assigning repeatedly and then letting every object go
+// out of scope is the black-box way to catch that regression, since Brain
+// itself isn't exposed outside Dog/Cat.
+void testAssignmentOperatorDeepCopiesBrain() {
+  Dog dog_a;
+  Dog dog_b;
+  dog_b = dog_a;
+  dog_a.makeSound();
+  dog_b.makeSound();
+
+  Cat cat_a;
+  Cat cat_b;
+  cat_b = cat_a;
+  cat_a.makeSound();
+  cat_b.makeSound();
+
+  std::cout << "OK: Dog/Cat operator= deep-copies Brain" << std::endl;
+}
+
+// Self-assignment (routed through a pointer so clang's
+// -Wself-assign-overloaded doesn't flag the literal `x = x`) must not crash
+// or free the object's own Brain out from under it.
+void testSelfAssignment() {
+  Dog dog;
+  Dog* dog_self = &dog;
+  dog = *dog_self;
+  dog.makeSound();
+
+  Cat cat;
+  Cat* cat_self = &cat;
+  cat = *cat_self;
+  cat.makeSound();
+
+  std::cout << "OK: Dog/Cat operator= self-assignment safe" << std::endl;
+}
+
+// Chained assignment relies on operator= returning a reference to *this.
+void testChainedAssignment() {
+  Dog a, b, c;
+  a = b = c;
+  assert(a.getType() == "Dog");
+  assert(b.getType() == "Dog");
+
+  std::cout << "OK: Dog operator= supports chained assignment" << std::endl;
+}
+
+// Half the array is Dog, half is Cat; every Animal must be deletable
+// through its base pointer with no leak (Brain included) and the
+// appropriate derived + base destructors must run for each.
+void testMixedArrayDeletedThroughBase() {
   const int animal_count = 4;
-  Animal* animal[animal_count];
-  animal[0] = new Dog;
-  animal[1] = new Dog;
-  animal[2] = new Cat;
-  animal[3] = new Cat;
+  Animal* animals[animal_count];
+  animals[0] = new Dog();
+  animals[1] = new Dog();
+  animals[2] = new Cat();
+  animals[3] = new Cat();
 
-  delete animal[0];
-  delete animal[1];
-  delete animal[2];
-  delete animal[3];
+  assert(animals[0]->getType() == "Dog");
+  assert(animals[1]->getType() == "Dog");
+  assert(animals[2]->getType() == "Cat");
+  assert(animals[3]->getType() == "Cat");
 
-  // Test2
-  return 0;
+  for (int i = 0; i < animal_count; i++) {
+    delete animals[i];
+  }
+
+  std::cout << "OK: mixed Animal* array deleted through base" << std::endl;
+}
+
+void runMyTest() {
+  std::cout << "------- My Test Cases -----------" << std::endl;
+  testGetTypeThroughBasePointer();
+  testCopyConstructorDeepCopiesBrain();
+  testAssignmentOperatorDeepCopiesBrain();
+  testSelfAssignment();
+  testChainedAssignment();
+  testMixedArrayDeletedThroughBase();
+  std::cout << "----------------------------" << std::endl;
+}
+
+}  // namespace
+
+int main() {
+  runSubjectTest();
+  runMyTest();
+  return EXIT_SUCCESS;
 }

@@ -139,7 +139,10 @@ void testCharacterAssignmentOperator() {
   a.equip(ice);
   b.equip(new Cure());
 
-  a = a;         // self-assignment must not crash or double free
+  // Self-assignment must not crash or double free. Routed through a pointer
+  // so clang's -Wself-assign-overloaded doesn't flag the literal `a = a`.
+  Character* a_self = &a;
+  a = *a_self;
   a.use(0, target);
 
   b = a;          // b's Cure must be released, replaced by a deep copy of a's Ice
@@ -197,7 +200,10 @@ void testMateriaSourceCopyWithPartialSlots() {
   assert(m != NULL);
   delete m;
 
-  src = src;  // self-assignment must not crash or double free
+  // Self-assignment must not crash or double free. Routed through a pointer
+  // so clang's -Wself-assign-overloaded doesn't flag the literal `src = src`.
+  MateriaSource* src_self = &src;
+  src = *src_self;
   m = src.createMateria("ice");
   assert(m != NULL);
   delete m;
