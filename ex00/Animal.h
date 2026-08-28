@@ -13,6 +13,9 @@ class Animal {
   std::string getType() const;
 
  protected:
+  void setType(const std::string& type);
+
+ private:
   std::string type_;
 };
 

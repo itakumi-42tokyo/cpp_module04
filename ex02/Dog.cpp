@@ -3,7 +3,7 @@
 #include "Brain.h"
 
 Dog::Dog() {
-  this->type_ = "Dog";
+  this->setType("Dog");
   this->brain_ = new Brain;
   std::cout << "Dog: constructor called." << std::endl;
 }
@@ -14,7 +14,7 @@ Dog::Dog(const Dog& cat) : Animal(cat) {
 }
 
 Dog& Dog::operator=(const Dog& other) {
-  this->type_ = other.type_;
+  this->setType(other.getType());
   if (&other != this) {
     delete this->brain_;
     this->brain_ = new Brain(*(other.brain_));

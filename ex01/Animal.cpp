@@ -19,3 +19,5 @@ Animal::~Animal() { std::cout << "Animal: destructor called." << std::endl; }
 void Animal::makeSound() const { std::cout << "Animal Sound!!" << std::endl; }
 
 std::string Animal::getType() const { return type_; }
+
+void Animal::setType(const std::string& type) { type_ = type; }

@@ -1,7 +1,7 @@
 #include "Cat.h"
 
 Cat::Cat() {
-  this->type_ = "Cat";
+  this->setType("Cat");
   std::cout << "Cat: constructor called." << std::endl;
 }
 
@@ -10,7 +10,7 @@ Cat::Cat(const Cat& c) : Animal(c) {
 }
 
 Cat& Cat::operator=(const Cat& c) {
-  this->type_ = c.type_;
+  this->setType(c.getType());
   return *this;
 }
 

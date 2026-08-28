@@ -1,7 +1,7 @@
 #include "Dog.h"
 
 Dog::Dog() {
-  this->type_ = "Dog";
+  this->setType("Dog");
   std::cout << "Dog: constructor called." << std::endl;
 }
 
@@ -10,7 +10,7 @@ Dog::Dog(const Dog& c) : Animal(c) {
 }
 
 Dog& Dog::operator=(const Dog& c) {
-  this->type_ = c.type_;
+  this->setType(c.getType());
   return *this;
 }
 

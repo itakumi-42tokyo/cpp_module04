@@ -3,7 +3,7 @@
 #include "Brain.h"
 
 Cat::Cat() {
-  this->type_ = "Cat";
+  this->setType("Cat");
   this->brain_ = new Brain;
   std::cout << "Cat: constructor called." << std::endl;
 }
@@ -14,7 +14,7 @@ Cat::Cat(const Cat& cat) : Animal(cat) {
 }
 
 Cat& Cat::operator=(const Cat& other) {
-  this->type_ = other.type_;
+  this->setType(other.getType());
   if (&other != this) {
     delete this->brain_;
     this->brain_ = new Brain(*(other.brain_));
