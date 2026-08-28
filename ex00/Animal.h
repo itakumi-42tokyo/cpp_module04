@@ -10,6 +10,7 @@ class Animal {
   Animal& operator=(const Animal& animal);
   virtual ~Animal();
   virtual void makeSound() const;
+  std::string getType() const;
 
  protected:
   std::string type_;

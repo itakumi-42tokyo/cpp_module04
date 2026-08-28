@@ -17,7 +17,3 @@ Cat& Cat::operator=(const Cat& c) {
 Cat::~Cat() { std::cout << "Cat: destructor called." << std::endl; }
 
 void Cat::makeSound() const { std::cout << "Mya~~~ O~~~" << std::endl; }
-
-std::string Cat::getType() const { return type_; }
-
-void Cat::setType(std::string type) { this->type_ = type; }
